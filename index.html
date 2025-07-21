@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Should I Eat? 🍽️</title>
+    <meta name="description" content="A playful food spinner to help you decide what to eat! Kid-friendly and halal-conscious.">
+    <!-- Optional: Add a cat paw favicon -->
+    <!-- <link rel="icon" href="assets/favicon.ico"> -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1 class="title">
+                <span class="title-main">What Should I Eat?</span>
+                <span class="title-emoji">🍽️✨</span>
+            </h1>
+            <p class="subtitle">Spin to discover your next delicious halal-friendly meal!</p>
+        </header>
+
+        <!-- Controls Section -->
+        <section class="controls" aria-label="Food category filters">
+            <h2 class="controls-title">Choose Categories:</h2>
+            <div class="filter-pills">
+                <label class="pill">
+                    <input type="checkbox" name="category" value="breakfast" checked>
+                    <span>🌅 Breakfast</span>
+                </label>
+                <label class="pill">
+                    <input type="checkbox" name="category" value="lunch" checked>
+                    <span>🍽️ Lunch</span>
+                </label>
+                <label class="pill">
+                    <input type="checkbox" name="category" value="dinner" checked>
+                    <span>🌙 Dinner</span>
+                </label>
+                <label class="pill">
+                    <input type="checkbox" name="category" value="snack" checked>
+                    <span>🍿 Snack</span>
+                </label>
+                <label class="pill">
+                    <input type="checkbox" name="category" value="dessert" checked>
+                    <span>🍰 Dessert</span>
+                </label>
+                <label class="pill">
+                    <input type="checkbox" name="category" value="drink" checked>
+                    <span>🧋 Drink</span>
+                </label>
+                <label class="pill">
+                    <input type="checkbox" name="category" value="quick-bite" checked>
+                    <span>⚡ Quick Bite</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- Spinner Section -->
+        <section class="spinner-section" aria-label="Food spinner">
+            <div class="spinner-container">
+                <div class="spinner" id="spinner" aria-hidden="true">
+                    <div class="spinner-items" id="spinnerItems">
+                        <!-- Spinner items will be populated by JavaScript -->
+                    </div>
+                    <div class="spinner-pointer">▼</div>
+                </div>
+                <!-- Floating Balloons -->
+                <div class="balloons" id="balloons">
+                    <div class="balloon">🎈</div>
+                    <div class="balloon">🎈</div>
+                    <div class="balloon">🎈</div>
+                    <div class="balloon">🎈</div>
+                    <div class="balloon">🎈</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Spin Button -->
+        <div class="button-container">
+            <button 
+                class="spin-button" 
+                id="spinButton" 
+                aria-label="Spin to select a food item"
+                aria-describedby="result-panel"
+            >
+                <span class="button-text">🎲 SPIN!</span>
+            </button>
+        </div>
+
+        <!-- Result Panel -->
+        <section class="result-panel" id="resultPanel" aria-live="polite" aria-label="Selected food result">
+            <div class="result-content" id="resultContent">
+                <div class="result-placeholder">
+                    <p>Click the spin button to discover your next meal! 🎯</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings -->
+        <section class="settings">
+            <div class="settings-row">
+                <label class="toggle-label">
+                    <input type="checkbox" id="effectsToggle" checked>
+                    <span>✨ Visual Effects</span>
+                </label>
+                <label class="toggle-label">
+                    <input type="checkbox" id="soundToggle" checked>
+                    <span>🔊 Sound Effects</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="disclaimer">
+                <p><strong>Note:</strong> Always verify packaged or restaurant items independently for halal compliance.</p>
+            </div>
+            <div class="instructions">
+                <p>💡 <strong>Secret:</strong> Try typing "CAT" for a surprise!</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Confetti Canvas (hidden by default) -->
+    <canvas id="confetti" class="confetti-canvas"></canvas>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
