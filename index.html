@@ -3,129 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>What Should I Eat? 🍽️</title>
-    <meta name="description" content="A playful food spinner to help you decide what to eat! Kid-friendly and halal-conscious.">
-    <!-- Optional: Add a cat paw favicon -->
-    <!-- <link rel="icon" href="assets/favicon.ico"> -->
+    <title>What Should I Eat?</title>
+    <meta name="description" content="Spin a wheel of 62 halal-friendly meals, snacks, desserts and drinks. Filter by category, save favourites, and let the wheel decide.">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;500;600;700&family=Young+Serif&display=swap">
     <link rel="stylesheet" href="style.css">
+    <script>
+        // Apply a saved theme before first paint to avoid a flash.
+        try {
+            const saved = JSON.parse(localStorage.getItem('whatShouldIEat') || '{}');
+            if (saved.theme === 'light' || saved.theme === 'dark') {
+                document.documentElement.dataset.theme = saved.theme;
+            }
+        } catch (error) { /* storage unavailable: follow the system theme */ }
+    </script>
 </head>
 <body>
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Header Section -->
-        <header class="header">
-            <h1 class="title">
-                <span class="title-main">What Should I Eat?</span>
-                <span class="title-emoji">🍽️✨</span>
-            </h1>
-            <p class="subtitle">Spin to discover your next delicious halal-friendly meal!</p>
+    <!-- Icon sprite: single-stroke line icons, coloured through currentColor -->
+    <svg class="sprite" aria-hidden="true" focusable="false">
+        <defs>
+            <symbol id="i-sunrise" viewBox="0 0 24 24"><path d="M3 17h18M7 17a5 5 0 0 1 10 0M12 5v3M4.9 10.2l1.8 1.2M19.1 10.2l-1.8 1.2M7 20.5h10"/></symbol>
+            <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
+            <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.5A8 8 0 1 1 9.5 4.5a6.5 6.5 0 0 0 10 10Z"/></symbol>
+            <symbol id="i-cookie" viewBox="0 0 24 24"><path d="M20.5 12.5A8.5 8.5 0 1 1 11.5 3.5a3 3 0 0 0 4 3.5 3 3 0 0 0 5 5.5Z"/><path d="M8.5 9.5h.01M8 14.5h.01M12.5 12.5h.01M15.5 16h.01M11.5 17.5h.01"/></symbol>
+            <symbol id="i-cone" viewBox="0 0 24 24"><path d="M7 10.5a5 5 0 1 1 10 0Z"/><path d="M7.5 10.5 12 21l4.5-10.5"/><path d="M9.5 14l4.5 1.5"/></symbol>
+            <symbol id="i-cup" viewBox="0 0 24 24"><path d="M6 8.5h12L16.6 21H7.4Z"/><path d="M12 8.5 13.8 3H17"/><path d="M6.6 13h10.8"/></symbol>
+            <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2.5 5.5 13H11l-1 8.5L17.5 11H12Z"/></symbol>
+            <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.2 4.2 0 0 1 12 7.2a4.2 4.2 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20Z"/></symbol>
+            <symbol id="i-bowl" viewBox="0 0 24 24"><path d="M3 11.5h18"/><path d="M4 11.5a8 7.5 0 0 0 16 0"/><path d="M9.5 20.5h5"/><path d="M8.5 8c0-1.6 1.2-2 1.2-3.6M13.5 8c0-1.6 1.2-2 1.2-3.6"/></symbol>
+            <symbol id="i-salad" viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M4 12a8 7.5 0 0 0 16 0"/><path d="M9.5 20.5h5"/><path d="M8 12c0-3.5 2.5-6 6-6.5 0 3.5-2.5 6-6 6.5Z"/><path d="M15 12c.5-1.6 1.8-2.7 3.5-3"/></symbol>
+            <symbol id="i-pot" viewBox="0 0 24 24"><path d="M4.5 10.5h15v4a5.5 5.5 0 0 1-5.5 5.5h-4a5.5 5.5 0 0 1-5.5-5.5Z"/><path d="M2.5 10.5h19"/><path d="M9 7c0-1.3 1-1.7 1-3M14 7c0-1.3 1-1.7 1-3"/></symbol>
+            <symbol id="i-wrap" viewBox="0 0 24 24"><path d="M6.5 20.5 3.5 9 12 3.5 20.5 9l-3 11.5Z"/><path d="M3.5 9c3 2 14 2 17 0"/><path d="M8.5 14.5c2 .8 5 .8 7 0"/></symbol>
+            <symbol id="i-sandwich" viewBox="0 0 24 24"><path d="M3.5 15.5 12 5l8.5 10.5Z"/><path d="M3.5 15.5h17v3h-17Z"/><path d="M8 11.5h8"/></symbol>
+            <symbol id="i-burger" viewBox="0 0 24 24"><path d="M4 11a8 6.5 0 0 1 16 0Z"/><path d="M3 14.5h18"/><path d="M4.5 18h15a2 2 0 0 1-2 2.5h-11a2 2 0 0 1-2-2.5Z"/></symbol>
+            <symbol id="i-egg" viewBox="0 0 24 24"><path d="M8.5 4.5c3-2 6.5-.5 8.5 1.5s4 5.5 1.5 8.5-5.5 5.5-8.5 4.5-6-3-6-6.5 1.5-6 4.5-8Z"/><circle cx="11.5" cy="11.5" r="3"/></symbol>
+            <symbol id="i-flatbread" viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="9" ry="7"/><path d="M8 10h.01M12 8.5h.01M15.5 11h.01M10 14h.01M14 15h.01"/></symbol>
+            <symbol id="i-toast" viewBox="0 0 24 24"><path d="M5.5 20V11.3A4 4 0 0 1 8 4h8a4 4 0 0 1 2.5 7.3V20Z"/><path d="M9 14c1.5-1.5 4.5-1.5 6 0"/></symbol>
+            <symbol id="i-pancakes" viewBox="0 0 24 24"><rect x="4" y="9.5" width="16" height="3" rx="1.5"/><rect x="4" y="13.5" width="16" height="3" rx="1.5"/><rect x="4" y="17.5" width="16" height="3" rx="1.5"/><path d="M10 9.5V7.5h4v2"/></symbol>
+            <symbol id="i-yogurt" viewBox="0 0 24 24"><path d="M4.5 9.5h15"/><path d="M5.5 9.5 7 20.5h10l1.5-11"/><circle cx="10" cy="6.5" r="1.8"/><circle cx="14.5" cy="6" r="1.8"/></symbol>
+            <symbol id="i-fish" viewBox="0 0 24 24"><path d="M2.5 12c3-5 9.5-6 13.5-2.5l4.5-3v11l-4.5-3C12 18 5.5 17 2.5 12Z"/><path d="M7.5 11.2h.01"/></symbol>
+            <symbol id="i-drumstick" viewBox="0 0 24 24"><path d="M13 15c-4 0-6-3-5.5-6.5S11.5 3 15 3.5s6 3.5 5.5 7S17 15 13 15Z"/><path d="M9.5 14 6 17.5"/><circle cx="4.8" cy="18.8" r="1.7"/></symbol>
+            <symbol id="i-pepper" viewBox="0 0 24 24"><path d="M12 7.5c4 0 7 2 7 6 0 4.5-3.5 7.5-7 7.5s-7-3-7-7.5c0-4 3-6 7-6Z"/><path d="M12 7.5V5c0-1.2.8-2 2-2"/><path d="M12 10.5v7"/></symbol>
+            <symbol id="i-pasta" viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M4 12a8 7.5 0 0 0 16 0"/><path d="M9.5 20.5h5"/><path d="M7 12c0-2 2-2 2-4s2-2 2-4M12 12c0-2 2-2 2-4s2-2 2-4"/></symbol>
+            <symbol id="i-dates" viewBox="0 0 24 24"><ellipse cx="9" cy="13" rx="4" ry="6.5" transform="rotate(-20 9 13)"/><ellipse cx="15.5" cy="11" rx="3.5" ry="6" transform="rotate(22 15.5 11)"/></symbol>
+            <symbol id="i-apple" viewBox="0 0 24 24"><path d="M12 7.5c-2-1.8-7-1.5-7 4 0 4 3 9 5 9 .9 0 1.3-.5 2-.5s1.1.5 2 .5c2 0 5-5 5-9 0-5.5-5-5.8-7-4Z"/><path d="M12 7.5c0-2 1-3.5 3-4"/></symbol>
+            <symbol id="i-nuts" viewBox="0 0 24 24"><path d="M9 3.5c3 2.5 4 5.5 4 8.5a4 4 0 0 1-8 0c0-3 1-6 4-8.5Z"/><path d="M16.5 10c2.5 2 3.5 4.5 3.5 6.5a3.5 3.5 0 0 1-7 0c0-.7.1-1.4.3-2"/></symbol>
+            <symbol id="i-popcorn" viewBox="0 0 24 24"><path d="M6 10.5h12l-1.8 10H7.8Z"/><path d="M10 10.5 10.5 20.5M14 10.5l-.5 10"/><path d="M6.5 10.5a2.5 2.5 0 0 1 2-4 2.8 2.8 0 0 1 5-1.5 2.5 2.5 0 0 1 4 3 2 2 0 0 1 0 2.5"/></symbol>
+            <symbol id="i-cake" viewBox="0 0 24 24"><path d="M3 19.5h18v-8L3 7.5Z"/><path d="M3 13l18 2.5"/><circle cx="16.5" cy="6" r="1.6"/></symbol>
+            <symbol id="i-coconut" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M5 10.5c3.5 2 10.5 2 14 0"/><path d="M14 6.5 16 2.5h3"/></symbol>
+            <symbol id="i-glass" viewBox="0 0 24 24"><path d="M6 4.5h12L16 21H8Z"/><path d="M6.6 9.5h10.8"/><path d="M15.5 4.5a3 3 0 0 1 5.5 1"/></symbol>
+            <symbol id="i-teacup" viewBox="0 0 24 24"><path d="M4 10h13v4a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6Z"/><path d="M17 11.5h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.5 1 2 1 3.5M12 3c0 1.5 1 2 1 3.5"/></symbol>
+            <symbol id="i-cheese" viewBox="0 0 24 24"><path d="M3 18v-6.5L15.5 5 21 11.5V18Z"/><path d="M3 11.5h18"/><circle cx="8" cy="15" r="1.2"/><circle cx="15" cy="14.5" r="1.5"/></symbol>
+            <symbol id="i-samosa" viewBox="0 0 24 24"><path d="M12 4 3 19.5h18Z"/><path d="M8 19.5l.8-2M12 19.5v-2M16 19.5l-.8-2"/></symbol>
+            <symbol id="i-roll" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="8" rx="4"/><path d="M9 8v8M15 8v8"/></symbol>
+            <symbol id="i-pizza" viewBox="0 0 24 24"><path d="M12 21 3 5.5c6-3 12-3 18 0Z"/><path d="M4.6 8.3c4.8-2 10-2 14.8 0"/><path d="M11 12h.01M13.5 15.5h.01M9.5 15.5h.01"/></symbol>
+            <symbol id="i-fries" viewBox="0 0 24 24"><path d="M6 10.5h12l-2 10H8Z"/><path d="M8 10.5V4.5M11 10.5v-7M14 10.5v-6M16.5 10.5V6.5"/></symbol>
+            <symbol id="i-skewer" viewBox="0 0 24 24"><path d="M3.5 20.5 20.5 3.5"/><circle cx="8.5" cy="15.5" r="2.6"/><circle cx="14.5" cy="9.5" r="2.6"/></symbol>
+            <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6.3 6.3l2.4 2.4M15.3 15.3l2.4 2.4M6.3 17.7l2.4-2.4M15.3 8.7l2.4-2.4"/></symbol>
+            <symbol id="i-sound-on" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12.5 5v14l-5-4.5H4Z"/><path d="M16 9a4.5 4.5 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></symbol>
+            <symbol id="i-sound-off" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12.5 5v14l-5-4.5H4Z"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5"/></symbol>
+            <symbol id="i-theme" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17"/><path d="M12 7.5h4.5M12 11.5h6M12 15.5h4.5"/></symbol>
+            <symbol id="i-spin" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 3.5V8h-4.5"/></symbol>
+            <symbol id="i-paw" viewBox="0 0 24 24"><path d="M12 12.5c-3 0-5.5 3-5.5 5.2 0 1.8 1.6 2.8 3.2 2.3 1.6-.4 3-.4 4.6 0 1.6.5 3.2-.5 3.2-2.3 0-2.2-2.5-5.2-5.5-5.2Z"/><circle cx="5" cy="10" r="1.8"/><circle cx="9" cy="5.5" r="1.8"/><circle cx="15" cy="5.5" r="1.8"/><circle cx="19" cy="10" r="1.8"/></symbol>
+        </defs>
+    </svg>
+
+    <div class="page">
+        <header class="masthead">
+            <a class="brand" href="./" aria-label="What Should I Eat? home">
+                <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+                    <circle cx="19" cy="21" r="14" class="mark-plate"/>
+                    <circle cx="19" cy="21" r="7.5" class="mark-inner"/>
+                    <path d="M19 7v6.5M33 21h-6.5M19 35v-6.5M5 21h6.5" class="mark-spokes"/>
+                    <path d="M38 21l-4.5-3v6Z" class="mark-pin"/>
+                </svg>
+                <span class="brand-text">
+                    <span class="brand-name">What Should I Eat?</span>
+                    <span class="brand-tag">Halal-friendly meal wheel</span>
+                </span>
+            </a>
+            <div class="masthead-tools">
+                <button class="icon-btn" id="soundToggle" type="button" aria-pressed="false" aria-label="Sound" title="Sound off">
+                    <svg class="icon icon-off" aria-hidden="true"><use href="#i-sound-off"/></svg>
+                    <svg class="icon icon-on" aria-hidden="true"><use href="#i-sound-on"/></svg>
+                </button>
+                <button class="icon-btn" id="confettiToggle" type="button" aria-pressed="true" aria-label="Confetti" title="Confetti on">
+                    <svg class="icon" aria-hidden="true"><use href="#i-sparkle"/></svg>
+                </button>
+                <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
+                    <svg class="icon" aria-hidden="true"><use href="#i-theme"/></svg>
+                </button>
+            </div>
         </header>
 
-        <!-- Controls Section -->
-        <section class="controls" aria-label="Food category filters">
-            <h2 class="controls-title">Choose Categories:</h2>
-            <div class="filter-pills">
-                <label class="pill">
-                    <input type="checkbox" name="category" value="breakfast" checked>
-                    <span>🌅 Breakfast</span>
-                </label>
-                <label class="pill">
-                    <input type="checkbox" name="category" value="lunch" checked>
-                    <span>🍽️ Lunch</span>
-                </label>
-                <label class="pill">
-                    <input type="checkbox" name="category" value="dinner" checked>
-                    <span>🌙 Dinner</span>
-                </label>
-                <label class="pill">
-                    <input type="checkbox" name="category" value="snack" checked>
-                    <span>🍿 Snack</span>
-                </label>
-                <label class="pill">
-                    <input type="checkbox" name="category" value="dessert" checked>
-                    <span>🍰 Dessert</span>
-                </label>
-                <label class="pill">
-                    <input type="checkbox" name="category" value="drink" checked>
-                    <span>🧋 Drink</span>
-                </label>
-                <label class="pill">
-                    <input type="checkbox" name="category" value="quick-bite" checked>
-                    <span>⚡ Quick Bite</span>
-                </label>
-            </div>
-        </section>
+        <main class="layout">
+            <section class="stage" aria-label="Meal wheel">
+                <div class="wheel-wrap" id="wheelWrap">
+                    <svg class="wheel" id="wheel" viewBox="-260 -260 520 520" aria-hidden="true" focusable="false">
+                        <circle r="244" cx="7" cy="9" class="wheel-shadow"/>
+                        <g id="rotor"></g>
+                        <g class="hub">
+                            <circle r="46" class="hub-plate"/>
+                            <circle r="30" class="hub-ring"/>
+                            <use href="#i-spin" x="-15" y="-15" width="30" height="30" class="hub-icon"/>
+                        </g>
+                        <g id="pointer" class="pointer">
+                            <path d="M222 0 252 -17 A6 6 0 0 1 259 -12 V12 A6 6 0 0 1 252 17 Z"/>
+                        </g>
+                    </svg>
+                    <svg class="paw" id="paw" aria-hidden="true" focusable="false"><use href="#i-paw"/></svg>
+                </div>
+                <button class="spin-btn" id="spinButton" type="button">
+                    <svg class="icon" aria-hidden="true"><use href="#i-spin"/></svg>
+                    <span id="spinLabel">Spin the wheel</span>
+                </button>
+                <p class="stage-hint" id="stageHint">or press Space</p>
+            </section>
 
-        <!-- Spinner Section -->
-        <section class="spinner-section" aria-label="Food spinner">
-            <div class="spinner-container">
-                <div class="spinner" id="spinner" aria-hidden="true">
-                    <div class="spinner-items" id="spinnerItems">
-                        <!-- Spinner items will be populated by JavaScript -->
+            <div class="side">
+                <section class="ticket" id="ticket" aria-labelledby="ticketTitle">
+                    <div class="ticket-empty" id="ticketEmpty">
+                        <p class="ticket-eyebrow">Your pick</p>
+                        <h2 class="ticket-title" id="ticketTitle">Hungry and undecided?</h2>
+                        <p class="ticket-desc">Spin the wheel and it will serve up one dish from the menu below. Save the ones you love.</p>
                     </div>
-                    <div class="spinner-pointer">▼</div>
-                </div>
-                <!-- Floating Balloons -->
-                <div class="balloons" id="balloons">
-                    <div class="balloon">🎈</div>
-                    <div class="balloon">🎈</div>
-                    <div class="balloon">🎈</div>
-                    <div class="balloon">🎈</div>
-                    <div class="balloon">🎈</div>
-                </div>
-            </div>
-        </section>
+                    <div class="ticket-result" id="ticketResult" hidden>
+                        <div class="ticket-head">
+                            <span class="ticket-icon" id="ticketIcon"><svg class="icon" aria-hidden="true"><use href="#i-bowl"/></svg></span>
+                            <p class="ticket-eyebrow" id="ticketEyebrow">The wheel says</p>
+                        </div>
+                        <h2 class="ticket-title" id="resultName"></h2>
+                        <p class="ticket-desc" id="resultDesc"></p>
+                        <ul class="ticket-cats" id="resultCats" aria-label="Categories"></ul>
+                        <p class="ticket-tags" id="resultTags"></p>
+                        <button class="save-btn" id="saveButton" type="button" aria-pressed="false">
+                            <svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg>
+                            <span id="saveLabel">Save to favourites</span>
+                        </button>
+                    </div>
+                </section>
 
-        <!-- Spin Button -->
-        <div class="button-container">
-            <button 
-                class="spin-button" 
-                id="spinButton" 
-                aria-label="Spin to select a food item"
-                aria-describedby="result-panel"
-            >
-                <span class="button-text">🎲 SPIN!</span>
-            </button>
-        </div>
+                <section class="menu" aria-labelledby="menuTitle">
+                    <h2 class="section-title" id="menuTitle">What are you in the mood for?</h2>
+                    <div class="chips" id="categoryChips" role="group" aria-labelledby="menuTitle"></div>
+                    <p class="menu-count" id="menuCount" aria-live="polite"></p>
+                </section>
 
-        <!-- Result Panel -->
-        <section class="result-panel" id="resultPanel" aria-live="polite" aria-label="Selected food result">
-            <div class="result-content" id="resultContent">
-                <div class="result-placeholder">
-                    <p>Click the spin button to discover your next meal! 🎯</p>
-                </div>
+                <section class="favs" aria-labelledby="favsTitle">
+                    <h2 class="section-title" id="favsTitle">Saved favourites</h2>
+                    <ul class="fav-list" id="favList"></ul>
+                    <p class="favs-empty" id="favsEmpty">Tap the heart on a pick to keep it here.</p>
+                </section>
             </div>
-        </section>
+        </main>
 
-        <!-- Settings -->
-        <section class="settings">
-            <div class="settings-row">
-                <label class="toggle-label">
-                    <input type="checkbox" id="effectsToggle" checked>
-                    <span>✨ Visual Effects</span>
-                </label>
-                <label class="toggle-label">
-                    <input type="checkbox" id="soundToggle" checked>
-                    <span>🔊 Sound Effects</span>
-                </label>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="disclaimer">
-                <p><strong>Note:</strong> Always verify packaged or restaurant items independently for halal compliance.</p>
-            </div>
-            <div class="instructions">
-                <p>💡 <strong>Secret:</strong> Try typing "CAT" for a surprise!</p>
-            </div>
+        <footer class="foot">
+            <p>Meat and seafood dishes assume halal sourcing. Always check packaged and restaurant food yourself.</p>
+            <p class="foot-secret">Psst: type C, A, T.</p>
         </footer>
     </div>
 
-    <!-- Confetti Canvas (hidden by default) -->
-    <canvas id="confetti" class="confetti-canvas"></canvas>
+    <div class="sr-only" id="announcer" aria-live="polite"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 
-    <!-- Scripts -->
     <script src="script.js"></script>
 </body>
 </html>
